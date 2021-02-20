@@ -135,3 +135,5 @@ fabric.properties
 *.app
 
 .idea/
+
+CMakeLists.txt
