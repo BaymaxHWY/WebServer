@@ -136,4 +136,4 @@ fabric.properties
 
 .idea/
 
-CMakeLists.txt
+*.txt

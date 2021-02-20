@@ -47,7 +47,7 @@ void WebServer::start() {
     if(!m_isClose) std::cout << "========== server start ===========" <<std::endl;
     while(!m_isClose) {
         if(m_timeoutMS > 0) {
-            // 获取下一个超时时间 todo 定时器
+            // 获取下一个超时时间
             time_ms = m_timer->GetNextTick();
         }
         int n = m_epoll->Wait(time_ms);
@@ -62,17 +62,9 @@ void WebServer::start() {
                 assert(m_clients.count(fd) > 0);
                 closeClient(m_clients[fd]);
             }else if(events & EPOLLIN) {
-//                if(m_clients.count(fd) == 0) {
-//                    std::cout << "EPOLLIN " << fd << std::endl;
-//                }
-//                std::cout << "EPOLLIN " << fd << std::endl;
                 assert(m_clients.count(fd) > 0);
                 dealRead(m_clients[fd]);
             }else if(events & EPOLLOUT) {
-//                if(m_clients.count(fd) == 0) {
-//                    std::cout << "EPOLLOUT " << fd << std::endl;
-//                }
-//                std::cout << "EPOLLOUT " << fd << std::endl;
                 assert(m_clients.count(fd) > 0);
                 dealWrite(m_clients[fd]);
             }
@@ -132,7 +124,6 @@ void WebServer::accpetConnect() {
     if(!m_clients[newfd])
         m_clients[newfd] = std::make_shared<HttpConn>();
     m_clients[newfd]->init(newfd, client_addr);
-    // todo 加入定时器
     if(m_timeoutMS > 0) {
         m_timer->add(newfd, m_timeoutMS, std::bind(&WebServer::closeClient, this, m_clients[newfd]));
     }
